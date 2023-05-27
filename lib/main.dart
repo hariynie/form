@@ -1,54 +1,101 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MaterialApp(
+    home: MyForm(),
+  ));
 }
 
-// With Flutter, you create user interfaces by combining "widgets"
-// You'll learn all about them (and much more) throughout this course!
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MyForm extends StatefulWidget {
+  const MyForm({Key? key}) : super(key: key);
 
-  // Every custom widget must have a build() method
-  // It tells Flutter, which widgets make up your custom widget
-  // Again: You'll learn all about that throughout the course!
   @override
+  State<MyForm> createState() => _MyFormState();
+}
+
+class _MyFormState extends State<MyForm> {
+  @override
+  final formkey = GlobalKey<FormState>();
+
   Widget build(BuildContext context) {
-    // Below, a bunch of built-in widgets are used (provided by Flutter)
-    // They will be explained in the next sections
-    // In this course, you will, of course, not just use them a lot but
-    // also learn about many other widgets!
-    return MaterialApp(
-      title: 'Flutter First App',
-      theme: ThemeData(useMaterial3: true),
-      home: Scaffold(
+    return Scaffold(
         appBar: AppBar(
-          title: const Text('Welcome to Flutter'),
+          title: Text('Scrollable Form'),
         ),
-        body: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: const [
-              Text(
-                'Flutter - The Complete Guide',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
+        body: LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+          return Padding(
+            padding: EdgeInsets.all(20),
+            child: SingleChildScrollView(
+              //padding: EdgeInsets.only(bottom: 200),
+              //scrollDirection: Axis.vertical,
+              child: Padding(
+                padding: const EdgeInsets.all(40),
+                child: Column(
+                  children: [
+                    Padding(padding: EdgeInsets.only(bottom: 200)),
+                    Form(
+                        key: formkey,
+                        child: Column(
+                          children: [
+                            TextFormField(
+                              decoration: const InputDecoration(
+                                icon: const Icon(Icons.person),
+                                hintText: 'Enter Username',
+                                labelText: 'Username',
+                              ),
+                              validator: (value) {
+                                if (value == null ||
+                                    value.length < 10 ||
+                                    value.isEmpty) {
+                                  return 'insufficient characters';
+                                }
+                                return null;
+                              },
+                            ),
+                            Padding(padding: EdgeInsets.only(bottom: 10)),
+                            TextFormField(
+                              decoration: const InputDecoration(
+                                icon: const Icon(Icons.lock),
+                                hintText: 'Enter Password',
+                                labelText: 'Password',
+                              ),
+                              validator: (value) {
+                                if (value == null ||
+                                    value.length < 10 ||
+                                    value.isEmpty) {
+                                  return 'insufficient characters';
+                                }
+                                return null;
+                              },
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 16.0),
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  if (formkey.currentState!.validate()) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content: Text(' Submitting')),
+                                    );
+                                  }
+                                },
+                                child: const Text('Submit'),
+                                style: ButtonStyle(
+                                    backgroundColor: MaterialStateProperty.all(
+                                        Colors.black)),
+                              ),
+                            ),
+
+                            ///adding(padding: EdgeInsets.only(bottom: 250))
+                          ],
+                        )),
+                  ],
                 ),
               ),
-              SizedBox(height: 16),
-              Text(
-                'Learn Flutter step-by-step, from the ground up.',
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+            ),
+          );
+        }));
   }
 }
